@@ -98,11 +98,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'vi_deals',
-        'USER': 'developer',
-        'PASSWORD': 'developer',
+        'NAME': 'develop',
+        'USER': 'develop',
+        'PASSWORD': 'develop',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '3333',
     }
 }
 

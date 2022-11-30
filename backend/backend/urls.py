@@ -20,9 +20,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-from settings.views import *
-
-from posts.views import *
+from backend.posts.views import PostViewSet, PostReactionViewSet, PostCommentViewSet, PostCommentReactionViewSet
+from backend.settings.views import SettingViewSet, UserViewSet, CategoryViewSet, DistrictViewSet, RegionViewSet
 
 
 @api_view(['GET'])

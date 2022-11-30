@@ -1,21 +1,15 @@
 version: '3.6'
 
-x-common-variables: &common-variables
-  MYSQL_DATABASE: develop
-  MYSQL_USER: develop
-  MYSQL_PASSWORD: develop
-  MYSQL_PORT: 3333
-
 services:
   db:
     container_name: deals_db
     image: mariadb:10.8
     restart: always
     environment:
-      <<: *common-variables
-      MYSQL_ROOT_PASSWORD: develop
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
     ports:
-      - "3333:3306"
+      - "${MYSQL_PORT}:3306"
   backend:
     container_name: deals_backend
     build: backend

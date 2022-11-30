@@ -5,7 +5,7 @@ RUN apt-get update \
 		mariadb-client \
 	&& rm -rf /var/lib/apt/lists/*
 
-WORKDIR /usr/src/backend/app
+WORKDIR /app/backend
 
 COPY requirements.txt ./
 

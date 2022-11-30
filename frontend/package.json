@@ -1,12 +1,12 @@
 {
-  "name": "ts-boilerplate-react-redux",
+  "name": "deals_frontend",
   "version": "1.0.0",
   "description": "A React Redux boilerplate with Typescript",
   "author": "Scott Jason",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:scottjason/ts-boilerplate-react-redux.git"
+    "url": "git@github.com:kanamania/nearby-deals.git"
   },
   "keywords": [],
   "scripts": {

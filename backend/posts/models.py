@@ -13,8 +13,8 @@ class PostCategory(models.Model):
     creator = models.BigIntegerField()
     modifier = models.BigIntegerField(null=True)
     remover = models.BigIntegerField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
 
 
@@ -26,8 +26,8 @@ class Post(models.Model):
     creator = models.BigIntegerField()
     remover = models.BigIntegerField(null=True)
     modifier = models.BigIntegerField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
 
 
@@ -37,8 +37,8 @@ class PostComment(models.Model):
     description = models.TextField(null=True)
     creator = models.BigIntegerField()
     remover = models.BigIntegerField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
 
 
@@ -47,8 +47,8 @@ class PostCommentReaction(models.Model):
     reaction = models.IntegerField(default=1)
     creator = models.BigIntegerField()
     remover = models.BigIntegerField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
 
 
@@ -57,6 +57,6 @@ class PostReaction(models.Model):
     reaction = models.IntegerField(default=1)
     creator = models.BigIntegerField()
     remover = models.BigIntegerField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)

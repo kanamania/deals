@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:19
 
 WORKDIR /app/frontend
 
@@ -8,5 +8,6 @@ COPY ./ ./
 
 RUN npm install -g npm@9.1.2
 RUN npm i
-RUN npm audit fix
-CMD ["npm", "run", "start"]
+
+EXPOSE 8000
+CMD ["npm", "run", "dev"]

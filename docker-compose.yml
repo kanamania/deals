@@ -1,44 +1,53 @@
 version: '3.6'
 
 services:
-  db:
+  deals_db:
+    env_file: .env
+    image: mysql:8.0.31-debian
     container_name: deals_db
-    image: mariadb:10.8
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_PORT: "${MYSQL_PORT}"
     ports:
       - "${MYSQL_PORT}:3306"
-  backend:
+    volumes:
+      - ./.docker/database:/var/lib/mysql
+      - ./.docker/init:/docker-entrypoint-initdb.d
+  deals_backend:
+    env_file: .env
+    build:
+      context: ./backend
+      dockerfile: ../.docker/backendDockerfile
     container_name: deals_backend
-    build: backend
     restart: always
-    command: python3 manage.py runserver 0.0.0.0:8080
+    working_dir: /app/backend
     volumes:
-      - .:/app/backend
+      - ./backend:/app/backend:rw
     ports:
-      - "81:8000"
+      - "${BACKEND_PORT}:8000"
     depends_on:
-      - db
-  frontend:
+      - deals_db
+  deals_frontend:
+    env_file: .env
+    build:
+      context: ./frontend
+      dockerfile: ../.docker/frontendDockerfile
     container_name: deals_frontend
-    build: frontend
     restart: always
-    command: npm run start
     volumes:
-      - .:/app/frontend
+      - ./frontend:/app/frontend:rw
     ports:
-      - "82:80"
-  phpmyadmin:
+      - "${FRONTEND_PORT}:8000"
+  deals_phpmyadmin:
+    env_file: .env
     container_name: deals_phpmyadmin
     image: phpmyadmin
     restart: always
     ports:
-      - "666:80"
+      - "${PHPMYADMIN_PORT}:80"
     environment:
       - PMA_ARBITARY=1
-      - PMA_CONTROLPORT=${MYSQL_PORT}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - PMA_CONTROLPORT="${MYSQL_PORT}"
     volumes:
-      - /sessions
+      - ./.docker/sessions

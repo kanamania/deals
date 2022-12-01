@@ -8,16 +8,16 @@ class Category(models.Model):
     description = models.TextField(null=True)
     creator = models.BigIntegerField()
     modifier = models.BigIntegerField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Region(models.Model):
     name = models.CharField(max_length=200)
     creator = models.BigIntegerField()
     modifier = models.BigIntegerField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class District(models.Model):
@@ -25,8 +25,8 @@ class District(models.Model):
     region = models.BigIntegerField()
     creator = models.BigIntegerField()
     modifier = models.BigIntegerField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Log(models.Model):
@@ -36,7 +36,7 @@ class Log(models.Model):
     new = models.TextField(null=True)
     record = models.BigIntegerField()
     creator = models.BigIntegerField()
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Setting(models.Model):
@@ -47,7 +47,7 @@ class Setting(models.Model):
     category = models.CharField(max_length=32)
     creator = models.BigIntegerField()
     modifier = models.BigIntegerField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True, auto_now=True)
 
 

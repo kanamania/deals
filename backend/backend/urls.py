@@ -20,8 +20,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-from backend.posts.views import PostViewSet, PostReactionViewSet, PostCommentViewSet, PostCommentReactionViewSet
-from backend.settings.views import SettingViewSet, UserViewSet, CategoryViewSet, DistrictViewSet, RegionViewSet
+import posts.views as posts
+import settings.views as settings
 
 
 @api_view(['GET'])
@@ -34,15 +34,15 @@ def api_root(request, format=None):
 
 
 router = routers.DefaultRouter()
-router.register(r'settings', SettingViewSet)
-router.register(r'users', UserViewSet)
-router.register(r'categories', CategoryViewSet)
-router.register(r'districts', DistrictViewSet)
-router.register(r'regions', RegionViewSet)
-router.register(r'posts', PostViewSet)
-router.register(r'post-reactions', PostReactionViewSet)
-router.register(r'comments', PostCommentViewSet)
-router.register(r'comment-reaction', PostCommentReactionViewSet)
+router.register(r'settings', settings.SettingViewSet)
+router.register(r'users', settings.UserViewSet)
+router.register(r'categories', settings.CategoryViewSet)
+router.register(r'districts', settings.DistrictViewSet)
+router.register(r'regions', settings.RegionViewSet)
+router.register(r'posts', posts.PostViewSet)
+router.register(r'post-reactions', posts.PostReactionViewSet)
+router.register(r'comments', posts.PostCommentViewSet)
+router.register(r'comment-reaction', posts.PostCommentReactionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

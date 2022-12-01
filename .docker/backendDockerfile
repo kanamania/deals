@@ -2,6 +2,7 @@ FROM python:3.10
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends mariadb-client \
+	&& apt-get install -y iputils-ping \
 	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app/backend
@@ -12,6 +13,8 @@ RUN pip install --root-user-action=ignore -r requirements.txt
 
 COPY ./ ./
 
+RUN pip install --root-user-action=ignore mysqlclient
+RUN pip install --root-user-action=ignore python-decouple
+
 
 EXPOSE 8000
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]

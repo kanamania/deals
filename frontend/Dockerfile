@@ -7,6 +7,7 @@ COPY package.json ./
 COPY ./ ./
 
 RUN npm install -g npm@9.1.2
+RUN npm i npm-run-all
 RUN npm i
 
 EXPOSE 8000

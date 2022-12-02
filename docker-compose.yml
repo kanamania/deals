@@ -1,75 +1,88 @@
-version: '3.6'
-
+version: "3.7"
 services:
-  deals_db:
-    networks:
-      deals_net:
-    env_file: .env
-    image: mysql:8.0.31-debian
-    container_name: deals_db
-    restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
-      - MYSQL_PORT="${MYSQL_PORT}"
-      - MYSQL_ROOT_HOST="${MYSQL_ROOT_HOST}"
-      - MYSQL_DATABASE="${MYSQL_DATABASE}"
-      - MYSQL_USER="${MYSQL_USER}"
-      - MYSQL_PASSWORD="${MYSQL_PASSWORD}"
-    ports:
-      - "${MYSQL_PORT}:3306"
-    volumes:
-      - .docker/database:/var/lib/mysql
-      - .docker/init:/docker-entrypoint-initdb.d
-  deals_backend:
-    networks:
-      deals_net:
-    env_file: .env
+  backend:
     build:
       context: ./backend
-      dockerfile: ../.docker/backendDockerfile
-    container_name: deals_backend
-    restart: always
-    working_dir: /app/backend
-    volumes:
-      - ./backend:/app/backend:rw
-      - ./.env:/app/backend/.env:ro
-    ports:
-      - "${BACKEND_PORT}:8000"
-    depends_on:
-      - deals_db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command : bash -c "python manage.py makemigrations &&
+      dockerfile: Dockerfile
+    command: bash -c "python manage.py makemigrations &&
                       python manage.py migrate &&
-                      python python manage.py createcachetable &&
-                      python python manage.py init_admin &&
+                      python manage.py createcachetable &&
+                      python manage.py init_admin &&
                       python manage.py runserver 0.0.0.0:8000"
-  deals_frontend:
-    env_file: .env
+    volumes:
+      - ./backend/:/app/
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env
+    depends_on:
+      - mysql_db
+
+  mysql_db:
+    image: mariadb:10.8
+    volumes:
+      - $DATA_DIR/mysql:/var/lib/mysql/
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_USER=${SQL_USER}
+      - MYSQL_PASSWORD=${SQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${SQL_PASSWORD}
+      - MYSQL_DATABASE=${SQL_DATABASE}
+
+  redis:
+    image: redis:6.0.9
+    ports:
+      - 6379:6379
+    command: redis-server
+    volumes:
+      - $DATA_DIR/redis-data:/var/lib/redis
+      - $DATA_DIR/redis.conf:/usr/local/etc/redis/redis.conf
+
+  celery:
+    build: ./backend
+    command: celery -A backend worker -l info --concurrency=10 -n worker1@%h
+    volumes:
+      - ./backend/:/app/
+    env_file:
+      - ./.env
+    depends_on:
+      - mysql_db
+      - redis
+  celery-beat:
+    build: ./backend
+    command: celery -A backend beat -l info
+    volumes:
+      - ./backend/:/app/
+    env_file:
+      - ./.env
+    depends_on:
+      - mysql_db
+      - redis
+  frontend:
+    env_file:
+      - ./.env
     build:
       context: ./frontend
-      dockerfile: ../.docker/frontendDockerfile
-    container_name: deals_frontend
+      dockerfile: Dockerfile
+    command: npm run dev
     restart: always
     stdin_open: true
     volumes:
       - ./frontend:/app/frontend:rw
     ports:
-      - "${FRONTEND_PORT}:8000"
-  deals_phpmyadmin:
-    env_file: .env
-    container_name: deals_phpmyadmin
+      - "3000:3000"
+  phpmyadmin:
+    env_file:
+      - ./.env
     image: phpmyadmin
     restart: always
     ports:
-      - "${PHPMYADMIN_PORT}:80"
+      - "8080:80"
     environment:
       - PMA_ARBITARY=1
-      - PMA_PORT="${MYSQL_PORT}"
-      - PMA_HOST="${MYSQL_ROOT_HOST}"
+      - MYSQL_ROOT_PASSWORD=${SQL_ROOT_PASSWORD}
+      - PMA_PORT="${SQL_PORT_MYSQL}
+      - PMA_HOST=${SQL_HOST_MYSQL}
     volumes:
-      - .docker/sessions:/sessions
-
-networks:
-  deals_net:
-    driver: bridge
+      - $DATA_DIR/sessions:/sessions
